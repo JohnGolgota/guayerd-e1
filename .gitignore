@@ -1,0 +1,5 @@
+*.xlsx
+*.csv
+*.xls
+local-*
+.venv
