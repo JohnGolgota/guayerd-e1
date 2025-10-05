@@ -3,3 +3,4 @@
 *.xls
 local-*
 .venv
+__pycache__
