@@ -200,3 +200,21 @@ flowchart TD
     
     F --> I[Fin del Programa]
 ```
+
+---
+
+## 9. Sugerencias de Copilot Implementadas
+
+### ✅ Aceptadas:
+1. **Organización modular** del código en clases
+2. **Manejo robusto** de entradas de usuario
+3. **Representación visual** mejorada de datos
+4. **Métricas cuantificables** para demostrar impacto
+5. **Documentación interactiva** con navegación fluida
+
+### ❌ Descartadas:
+1. Integración directa con base de datos (fuera del alcance)
+2. Funciones de escritura/actualización (solo consulta)
+3. Interfaz gráfica (mantener enfoque en CLI)
+
+---
