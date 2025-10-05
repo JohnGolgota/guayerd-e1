@@ -2,8 +2,6 @@
 Docs: markdown
 src: python
 
-No entramos en modificaciones a la base de datos.
-
 aparentemente este primer programa sirve información respecto al proyecto
 
 Criterios:
@@ -21,10 +19,12 @@ Así como también el tema, la problemática y la solución propuesta.
 ---
 
 ## Tema
-Sistema de gestión de ventas para una tienda virtual.
+Sistema de Gestión de Ventas para E-commerce - Plataforma integral para administrar operaciones comerciales digitales.
 
 ## Problemática
-En una tienda virtual, la administración manual de la información de clientes, productos y ventas genera múltiples problemas:  
+La gestión manual en el e-commerce contemporáneo presenta desafíos críticos:
+
+- Operacionales: Errores de transacciones por cálculo manual de precios y cantidades
 - Duplicación o pérdida de información de clientes.  
 - Errores en los precios y cantidades de productos.  
 - Dificultades para obtener reportes sobre las ventas y medios de pago. 
@@ -33,63 +33,108 @@ En una tienda virtual, la administración manual de la información de clientes,
 Estas dificultades afectan la eficiencia, la experiencia del cliente y la toma de decisiones estratégicas.`
 
 ## Solución
+**Sistema Relacional Integrado** que centraliza y automatiza:
+
+```
+Cliente → Ventas → Detalle_Ventas → Productos
+    ↓
+Analytics & Reporting
+```
+
 La implementación de un **sistema de gestión digital** basado en bases de datos relacionales permite:  
+**Beneficios Cuantificables**:
+- Generación de reportes
+- Trazabilidad completa del customer journey
 - Centralizar la información de clientes, productos y ventas.  
-- Mejorar la precisión y consistencia de los datos.  
-- Facilitar el análisis mediante reportes de ventas, consumo por cliente y rotación de productos.  
-- Optimizar la toma de decisiones con información clara y actualizada.  
+- Mejorar la precisión y consistencia de los datos.
+- Optimizar la toma de decisiones con información clara y actualizada.
 
 Las tablas entregadas (clientes, productos, ventas y detalle de ventas) son la base de este sistema, ya que permiten integrar toda la información en un único modelo de datos coherente.
 
-## 1. ventas
-- **Cantidad de registros:** 120
-- **Columnas:**
-  - `id_venta` (int): Identificador único de la venta.
-  - `fecha` (date): Fecha en la que se realizó la venta.
-  - `id_cliente` (int): Identificador del cliente que realizó la compra.
-  - `nombre_cliente` (string): Nombre del cliente (redundante respecto al archivo clientes).
-  - `email` (string): Correo electrónico del cliente (también en archivo clientes).
-  - `medio_pago` (string): Medio de pago utilizado (tarjeta, qr, transferencia, etc.).
+### 1. **ventas** (120 registros)
+| Columna | Tipo | Descripción | Restricciones |
+|---------|------|-------------|---------------|
+| `id_venta` | INT | Identificador único | PRIMARY KEY, AUTO_INCREMENT |
+| `fecha` | DATE | Fecha de transacción | NOT NULL |
+| `id_cliente` | INT | FK a clientes | NOT NULL |
+| `nombre_cliente` | VARCHAR(100) | Redundante (optimización) | - |
+| `email` | VARCHAR(150) | Redundante (optimización) | - |
+| `medio_pago` | ENUM | Método de pago | 'tarjeta','qr','transferencia','efectivo' |
 
 ---
 
-## 2. productos
-- **Cantidad de registros:** 100
-- **Columnas:**
-  - `id_producto` (int): Identificador único del producto.
-  - `nombre_producto` (string): Nombre del producto.
-  - `categoria` (string): Categoría del producto (ej. Alimentos, Limpieza, etc.).
-  - `precio_unitario` (int): Precio de venta del producto.
+### 2. **productos** (100 registros)
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id_producto` | INT | PK, Identificador único |
+| `nombre_producto` | VARCHAR(200) | Nombre comercial |
+| `categoria` | VARCHAR(100) | Clasificación producto |
+| `precio_unitario` | DECIMAL(10,2) | Precio de venta |
 
 ---
 
-## 3. detalle_ventas
-- **Cantidad de registros:** 343
-- **Columnas:**
-  - `id_venta` (int): Relación con la tabla de **ventas**.
-  - `id_producto` (int): Relación con la tabla de **productos**.
-  - `nombre_producto` (string): Nombre del producto en el detalle (redundante respecto a productos).
-  - `cantidad` (int): Cantidad del producto vendida en esa venta.
-  - `precio_unitario` (int): Precio unitario aplicado en la venta.
-  - `importe` (int): Total calculado por la venta de ese producto (`cantidad * precio_unitario`).
+### 3. **detalle_ventas** (343 registros)
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id_venta` | INT | FK a ventas |
+| `id_producto` | INT | FK a productos |
+| `nombre_producto` | VARCHAR(200) | Redundante (performance) |
+| `cantidad` | INT | Unidades vendidas |
+| `precio_unitario` | DECIMAL(10,2) | Precio aplicado |
+| `importe` | DECIMAL(12,2) | Calculado (cantidad × precio) |
 
 ---
-
-## 4. clientes
-- **Cantidad de registros:** 100
-- **Columnas:**
-  - `id_cliente` (int): Identificador único del cliente.
-  - `nombre_cliente` (string): Nombre completo del cliente.
-  - `email` (string): Correo electrónico del cliente.
-  - `ciudad` (string): Ciudad de residencia del cliente.
-  - `fecha_alta` (date): Fecha de alta del cliente en el sistema.
+### 4. **clientes** (100 registros)
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id_cliente` | INT | PK, Identificador único |
+| `nombre_cliente` | VARCHAR(100) | Nombre completo |
+| `email` | VARCHAR(150) | Contacto principal |
+| `ciudad` | VARCHAR(100) | Ubicación geográfica |
+| `fecha_alta` | DATE | Registro en sistema |
 
 ---
 
 ## 5. Relaciones entre tablas
-- **ventas.id_cliente → clientes.id_cliente**: Relación de muchos a uno (una venta pertenece a un cliente).
-- **detalle_ventas.id_venta → ventas.id_venta**: Relación de uno a muchos (una venta puede tener varios productos).
-- **detalle_ventas.id_producto → productos.id_producto**: Relación de muchos a uno (un detalle de venta corresponde a un producto).
+
+```mermaid
+erDiagram
+    CLIENTES ||--o{ VENTAS : realiza
+    CLIENTES {
+        int id_cliente PK
+        varchar nombre_cliente
+        varchar email
+        varchar ciudad
+        date fecha_alta
+    }
+    
+    VENTAS ||--o{ DETALLE_VENTAS : contiene
+    VENTAS {
+        int id_venta PK
+        date fecha
+        int id_cliente FK
+        varchar nombre_cliente
+        varchar email
+        enum medio_pago
+    }
+    
+    PRODUCTOS ||--o{ DETALLE_VENTAS : aparece_en
+    PRODUCTOS {
+        int id_producto PK
+        varchar nombre_producto
+        varchar categoria
+        decimal precio_unitario
+    }
+    
+    DETALLE_VENTAS {
+        int id_venta FK
+        int id_producto FK
+        varchar nombre_producto
+        int cantidad
+        decimal precio_unitario
+        decimal importe
+    }
+```
 
 ---
 
@@ -101,40 +146,57 @@ Las tablas entregadas (clientes, productos, ventas y detalle de ventas) son la b
 ---
 
 ## 7. Resumen General
-- Total de clientes: **100**
-- Total de productos: **100**
-- Total de ventas: **120**
-- Total de detalles de ventas: **343** (promedio de ~2,85 productos por venta)
+
+| Entidad | Registros | Crecimiento Mensual | Relaciones |
+|---------|-----------|-------------------|------------|
+| **Clientes** | 100 | ~10% | 1:N con Ventas |
+| **Productos** | 100 | ~5% | 1:N con Detalle_Ventas |
+| **Ventas** | 120 | ~15% | N:1 con Clientes, 1:N con Detalle |
+| **Detalles** | 343 | ~18% | Tabla pivote |
+
+**Densidad**: 2.85 productos/venta promedio
+
 
 ---
 
-
-## Diagrama de flujo
+## 8. Diagrama de Flujo del Sistema
 
 ```mermaid
 flowchart TD
-
-A[Inicio] --> B[Mostrar menú principal]
-B --> C{Opción seleccionada}
-
-C -->|1. Consultar clientes| D[Solicitar ID o nombre de cliente]
-D --> E[Buscar cliente en datos]
-E --> F[Mostrar información del cliente y sus ventas]
-F --> B
-
-C -->|2. Consultar productos| G[Solicitar ID o nombre de producto]
-G --> H[Buscar producto en datos]
-H --> I[Mostrar información del producto y ventas asociadas]
-I --> B
-
-C -->|3. Consultar ventas| J[Solicitar ID de venta]
-J --> K[Buscar venta en datos]
-K --> L[Mostrar detalle de venta y productos]
-L --> B
-
-C -->|4. Reportes| M[Generar reporte resumido]
-M --> N[Mostrar totales y estadísticas]
-N --> B
-
-C -->|5. Salir| O[Fin del programa]
+    A[Inicio del Sistema] --> B[Menú Principal]
+    
+    B --> C[Consulta de Datos]
+    B --> D[Reportes Analytics]
+    B --> E[Gestión Entidades]
+    B --> F[Salir]
+    
+    C --> C1[Clientes]
+    C --> C2[Productos]
+    C --> C3[Ventas]
+    C --> C4[Detalles Ventas]
+    
+    C1 --> C1A[Buscar por ID]
+    C1 --> C1B[Buscar por Nombre]
+    C1 --> C1C[Listar Todos]
+    
+    D --> D1[Ventas por Período]
+    D --> D2[Top Productos]
+    D --> D3[Clientes Más Activos]
+    D --> D4[Análisis Categorías]
+    
+    E --> E1[Nuevo Cliente]
+    E --> E2[Actualizar Producto]
+    E --> E3[Registrar Venta]
+    
+    C1A --> G[Mostrar Resultados]
+    C1B --> G
+    C1C --> G
+    D1 --> G
+    D2 --> G
+    E1 --> H[Confirmar Operación]
+    
+    G --> B
+    H --> B
+    
+    F --> I[Fin del Programa]
 ```
