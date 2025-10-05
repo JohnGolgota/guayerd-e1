@@ -1,7 +1,4 @@
 
-import pandas as pd
-import os
-
 class SistemaGestionVentas:
     def __init__(self):
         self.documentacion = {

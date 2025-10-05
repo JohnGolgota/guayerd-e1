@@ -11,7 +11,18 @@ Criterios:
 - Sugerencias de Copilot aceptadas y descartadas
 - Programa en python interactivo que permita consultar la documentación de manera interactiva y sin errores de ejecución 
 
-# Documentación del Proyecto
+## Indice
+- [tema](#tema)
+- [problema](#problemática)
+- [solución](#solución)
+- [estructura de tablas](#1-ventas-120-registros)
+- [relaciones](#5-relaciones-entre-tablas)
+- [observaciones](#6-observaciones)
+- [métricas](#7-resumen-general)
+- [diagrama de flujo](#8-diagrama-de-flujo-del-sistema)
+- [sugerencias de copilot](#9-sugerencias-de-copilot-implementadas)
+
+## Documentación del Proyecto
 
 Este documento describe la estructura y relación de los datos: **ventas**, **productos**, **detalle_ventas** y **clientes**.
 Así como también el tema, la problemática y la solución propuesta.
