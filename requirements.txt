@@ -1,0 +1,15 @@
+pandas>=1.5
+numpy>=1.23
+matplotlib>=3.5
+seaborn>=0.12
+jupyterlab>=3.0
+notebook>=6.5
+plotly>=5.0
+openpyxl>=3.0
+xlrd>=2.0
+python-dotenv>=0.21
+ipykernel>=6.0
+
+# Optional / dev
+# black
+# pytest

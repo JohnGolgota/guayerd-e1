@@ -1,3 +1,56 @@
+# Estadística interactiva sobre los CSV en `db/`
+
+Este repositorio contiene utilidades y notebooks para limpiar y analizar los CSV ubicados en la carpeta `db/`.
+
+Objetivos principales
+- Inventariar los ficheros CSV y generar un resumen (`db/inventory.csv`).
+- Proveer utilidades de carga y limpieza.
+- Notebooks interactivos que muestren estadísticas descriptivas (cuartiles, medias, etc.) y visualizaciones (histograma, boxplot, conteos).
+
+Dependencias
+Instala las dependencias listadas en `requirements.txt`. Recomendado usar un virtualenv.
+
+PowerShell (Windows / pwsh):
+```powershell
+# crear y activar virtualenv (opcional)
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+# instalar dependencias
+pip install -r requirements.txt
+```
+
+Linux / macOS (bash):
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Uso rápido
+
+- Generar inventario de CSV (genera `db/inventory.csv`):
+
+```powershell
+python src/inventory.py
+```
+
+- Abrir el notebook de análisis (cuando exista):
+
+```powershell
+jupyter lab notebooks/estadistica_basica.ipynb
+# o
+jupyter notebook notebooks/estadistica_basica.ipynb
+```
+
+Siguientes pasos sugeridos
+- Implementar `src/data.py` con utilidades `load_csv`, `summarize_df`, `clean_df`.
+- Crear `notebooks/estadistica_basica.ipynb` con ejemplos de limpieza, cuartiles y gráficos.
+- Añadir `src/visual.py` para encapsular las funciones de plot.
+
+Notas
+- El script `src/inventory.py` intenta leer CSVs con varios separadores y encodings comunes.
+- Si tus ficheros están en otros formatos (por ejemplo Excel), instala `openpyxl` y usa `pandas.read_excel`.
 # Indice
 - [task:](./specs/requirements.md)
 - [Documentación del Proyecto](./documentacion.md)
