@@ -158,12 +158,12 @@ erDiagram
 
 ## 7. Resumen General
 
-| Entidad | Registros | Crecimiento Mensual | Relaciones |
-|---------|-----------|-------------------|------------|
-| **Clientes** | 100 | ~10% | 1:N con Ventas |
-| **Productos** | 100 | ~5% | 1:N con Detalle_Ventas |
-| **Ventas** | 120 | ~15% | N:1 con Clientes, 1:N con Detalle |
-| **Detalles** | 343 | ~18% | Tabla pivote |
+| Entidad | Registros | Relaciones |
+|---------|-----------|------------|
+| **Clientes** | 100 | 1:N con Ventas |
+| **Productos** | 100 | 1:N con Detalle_Ventas |
+| **Ventas** | 120 | N:1 con Clientes, 1:N con Detalle |
+| **Detalles** | 343 | Tabla pivote |
 
 **Densidad**: 2.85 productos/venta promedio
 
@@ -229,3 +229,7 @@ flowchart TD
 3. Interfaz gráfica (mantener enfoque en CLI)
 
 ---
+
+## Links
+
+- [github repo, Entrega 1](https://github.com/JohnGolgota/guayerd-e1)
