@@ -35,6 +35,25 @@ Uso rápido
 python src/inventory.py
 ```
 
+Ejecutar tests
+
+```powershell
+# con el virtualenv activado
+python -m pytest -q
+```
+
+Ejecutar el notebook de ejemplo
+
+```powershell
+jupyter lab notebooks/estadistica_basica.ipynb
+# o
+jupyter notebook notebooks/estadistica_basica.ipynb
+```
+
+Notas sobre los nombres de archivos
+
+Algunos CSV en `db/` vienen con doble extensión (por ejemplo `ventas.csv.csv`). Puedes usar los nombres tal cual en las celdas del notebook o normalizarlos renombrando los ficheros. Si quieres, puedo automatizar ese paso y crear copias/respaldos antes de renombrar.
+
 - Abrir el notebook de análisis (cuando exista):
 
 ```powershell
