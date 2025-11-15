@@ -1,154 +1,116 @@
+"""Visor interactivo de documentación para el proyecto Aurelion.
+
+Lee archivos Markdown y permite navegar por secciones mediante un menú.
+Este módulo contiene funciones pequeñas y bien tipadas para facilitar su
+lectura y pruebas.
 """
-Visor interactivo de documentación para el proyecto Aurelion.
-Lee archivos .md y permite navegar por secciones mediante un menú.
-"""
+from __future__ import annotations
+
 import os
-import sys
-from utils import Colors, clear_screen, format_markdown_line, render_content
+from typing import Dict, List, Optional
 
-MD_FILENAME = "README.md"
+from .utils import Colors, clear_screen, format_markdown_line, render_content
 
-def load_file(path):
-    """
-    Carga el archivo de documentación.
-    
+DEFAULT_MD_FILENAME = "README.md"
+
+
+def load_file(path: str) -> List[str]:
+    """Leer un archivo de texto y devolver sus líneas.
+
     Args:
-        path (str): Ruta del archivo a cargar
-        
+        path: Ruta al archivo a leer.
+
     Returns:
-        list: Líneas del archivo
-        
+        Lista de líneas (sin saltos de línea).
+
     Raises:
-        SystemExit: Si el archivo no existe
+        FileNotFoundError: si el archivo no existe.
     """
-    try:
-        with open(path, "r", encoding = "utf-8") as f:
-            return f.read().splitlines()
-    except FileNotFoundError:
-        print(f"Error: Archivo no encontrado en {path}")
-        sys.exit(1)
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read().splitlines()
 
-def parse_document(lines):
+def parse_document(lines: List[str]) -> List[Dict]:
+    """Parsear líneas Markdown en una estructura de secciones.
+
+    Se consideran H1 (`# `) como secciones principales y H2 (`## `) como
+    subsecciones.
     """
-    Parsea el documento en secciones H1 con subsecciones H2.
-    
-    Args:
-        lines (list): Líneas del documento
-        
-    Returns:
-        list: Lista de diccionarios con estructura {titulo, contenido, subsecciones}
-    """
-    sections = []
-    current_section = None
-    current_subsection = None
-    
+    sections: List[Dict] = []
+    current_section: Optional[Dict] = None
+    current_subsection: Optional[Dict] = None
+
     for line in lines:
         text = line.lstrip()
-        
-        if text.startswith("# "):  # H1
+
+        if text.startswith("# "):
             title = text[2:].strip()
             current_section = {"titulo": title, "contenido": [], "subsecciones": []}
             sections.append(current_section)
             current_subsection = None
-            
-        elif text.startswith("## "):  # H2
+
+        elif text.startswith("## "):
             title = text[3:].strip()
-            if current_section is None:  # Si no hay H1, crear una por defecto
+            if current_section is None:
                 current_section = {"titulo": "INTRODUCCIÓN", "contenido": [], "subsecciones": []}
                 sections.append(current_section)
             current_subsection = {"titulo": title, "contenido": []}
             current_section["subsecciones"].append(current_subsection)
-            
-        else:  # Contenido
+
+        else:
             if current_subsection is not None:
                 current_subsection["contenido"].append(line)
             elif current_section is not None:
                 current_section["contenido"].append(line)
-    
+
     return sections
 
-def find_section(sections, prefix):
-    """
-    Busca una sección H1 por prefijo (case-insensitive).
-    
-    Args:
-        sections (list): Lista de secciones
-        prefix (str): Prefijo a buscar
-        
-    Returns:
-        dict or None: Sección encontrada o None
-    """
+def find_section(sections: List[Dict], prefix: str) -> Optional[Dict]:
+    """Buscar una sección cuyo título empiece por el prefijo dado (insensible a mayúsculas)."""
     prefix_lower = prefix.lower()
     for sec in sections:
         if sec["titulo"].lower().startswith(prefix_lower):
             return sec
     return None
 
-def find_subsection(section, prefix):
-    """
-    Busca una subsección H2 por prefijo (case-insensitive).
-    
-    Args:
-        section (dict): Sección donde buscar
-        prefix (str): Prefijo a buscar
-        
-    Returns:
-        dict or None: Subsección encontrada o None
-    """
+def find_subsection(section: Dict, prefix: str) -> Optional[Dict]:
+    """Buscar una subsección dentro de una sección por prefijo."""
     prefix_lower = prefix.lower()
     for sub in section.get("subsecciones", []):
         if sub["titulo"].lower().startswith(prefix_lower):
             return sub
     return None
 
-def show_subsections(section, keys = None):
-    """
-    Muestra subsecciones de una sección.
-    
-    Args:
-        section (dict): Sección a mostrar
-        keys (list, optional): Lista de subsecciones específicas a mostrar. 
-        (Si es None, muestra toda la sección.)
-    """
+def show_subsections(section: Dict, keys: Optional[List[str]] = None) -> None:
+    """Imprimir una sección o subsecciones específicas con formato."""
     if keys:
-        # Mostrar solo subsecciones específicas
         for key in keys:
             sub = find_subsection(section, key)
-            if sub:
-                print(f"\n{Colors.CYAN}{Colors.BOLD}{sub['titulo']}{Colors.RESET}")
-                print(f"{Colors.CYAN}{'-' * len(sub['titulo'])}{Colors.RESET}")
-                
-                # Formatear cada línea del contenido
-                for line in sub["contenido"]:
-                    formatted = format_markdown_line(line)
-                    if formatted:
-                        print(formatted)
-                
-                if not sub["contenido"] or not any(sub["contenido"]):
-                    print(f"{Colors.YELLOW}[sin contenido]{Colors.RESET}")
-            else:
+            if not sub:
                 print(f"\n{Colors.RED}[Subsección '{key}' no encontrada]{Colors.RESET}")
+                continue
+            print(f"\n{Colors.CYAN}{Colors.BOLD}{sub['titulo']}{Colors.RESET}")
+            print(f"{Colors.CYAN}{'-' * len(sub['titulo'])}{Colors.RESET}")
+            for line in sub["contenido"]:
+                formatted = format_markdown_line(line)
+                if formatted:
+                    print(formatted)
+            if not sub["contenido"] or not any(sub["contenido"]):
+                print(f"{Colors.YELLOW}[sin contenido]{Colors.RESET}")
     else:
-        # Mostrar la sección completa
         print(f"\n{Colors.HEADER}{Colors.BOLD}{section['titulo']}{Colors.RESET}")
         print(f"{Colors.HEADER}{'=' * len(section['titulo'])}{Colors.RESET}")
-        
         if section["contenido"]:
             for line in section["contenido"]:
                 formatted = format_markdown_line(line)
                 if formatted:
                     print(formatted)
-        
         for sub in section.get("subsecciones", []):
             print(f"\n{Colors.CYAN}{Colors.BOLD}{sub['titulo']}{Colors.RESET}")
             print(f"{Colors.CYAN}{'-' * len(sub['titulo'])}{Colors.RESET}")
-            
-            # Formatear cada línea del contenido
             for line in sub["contenido"]:
                 formatted = format_markdown_line(line)
                 if formatted:
                     print(formatted)
-            
             if not sub["contenido"] or not any(sub["contenido"]):
                 print(f"{Colors.YELLOW}[sin contenido]{Colors.RESET}")
 
@@ -215,13 +177,17 @@ def main():
     """Función principal del programa."""
     # Cargar y parsear el archivo (buscar en el directorio padre)
     parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    path = os.path.join(parent_dir, MD_FILENAME)
-    lines = load_file(path)
+    path = os.path.join(parent_dir, DEFAULT_MD_FILENAME)
+    try:
+        lines = load_file(path)
+    except FileNotFoundError:
+        print(f"{Colors.RED}Error: archivo de documentación no encontrado en {path}{Colors.RESET}")
+        return
     sections = parse_document(lines)
     
     if not sections:
-        print("Error: No se encontraron secciones en el archivo.")
-        sys.exit(1)
+        print(f"{Colors.RED}Error: No se encontraron secciones en el archivo.{Colors.RESET}")
+        return
     
     # Localizar secciones principales
     first_section = sections[0]
