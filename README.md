@@ -99,3 +99,7 @@ Recomendado usar vscode con las extensiones mencionadas en /.vscode/extensions.j
 2. Activar el entorno virtual
 - en bash: `source .venv/bin/activate`
 - powershell: `./.venv/bin/Activate.ps1`
+
+## Auto referencia
+
+[Repositorio](https://github.com/JohnGolgota/guayerd-e1)
