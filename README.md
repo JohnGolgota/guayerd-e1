@@ -2,6 +2,19 @@
 
 Este repositorio contiene utilidades y notebooks para limpiar y analizar los CSV ubicados en la carpeta `db/`.
 
+## Origen y adaptaciones
+
+Este repositorio se basa en un proyecto de ejemplo que sirvió como punto de partida. En lugar de ocultar esa procedencia, se ha decidido dejar constancia de la fuente y describir las adaptaciones realizadas o planeadas. Si conoces la URL o la referencia exacta del proyecto original, reemplaza el marcador [aurelion_shop](https://drive.google.com/drive/folders/1yQhz-sKzgsVkVXIDGVpCIsl2a16UXW_E?usp=drive_link) por la referencia concreta.
+
+- Fuente original: [aurelion_shop](https://drive.google.com/drive/folders/1yQhz-sKzgsVkVXIDGVpCIsl2a16UXW_E?usp=drive_link) (reemplazar si conoces la URL o el autor).
+- Adaptaciones realizadas o previstas:
+	- Refactorización y limpieza de código en los módulos de carga y procesamiento de datos (`src/`).
+	- Añadido de análisis propio y visualizaciones (por ejemplo, un notebook adicional `notebooks/05_mi_analisis.ipynb`).
+	- Ampliación de pruebas unitarias en `tests/` para validar la carga y limpieza de CSVs.
+	- Documentación adicional y notas para la entrega (`ENTREGA_NOTA.md`).
+
+Nota sobre licencias: si la fuente original especifica una licencia (por ejemplo MIT, Apache, etc.), respeta sus términos y menciona la licencia aquí. Este reconocimiento es una práctica ética que evita malentendidos y muestra transparencia en la entrega.
+
 Objetivos principales
 - Inventariar los ficheros CSV y generar un resumen (`db/inventory.csv`).
 - Proveer utilidades de carga y limpieza.
